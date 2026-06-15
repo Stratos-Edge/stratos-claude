@@ -1,0 +1,9 @@
+# This repo holds capabilities only — never secrets. Belt-and-suspenders guards:
+.env
+.env.*
+.claude/.credentials.json
+**/.credentials.json
+
+# OS / editor noise
+.DS_Store
+node_modules/
