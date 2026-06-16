@@ -27,7 +27,7 @@ Each person opens their **own isolated Codespace** (its own private VM) from thi
    Copy the token it prints (valid ~1 year).
 3. **Store it as your personal Codespaces secret** named `CLAUDE_CODE_OAUTH_TOKEN`, scoped to this repo:
    - Web: `github.com/settings/codespaces` → **Codespaces secrets** → **New secret**, or
-   - CLI: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --user --app codespaces --repos <org>/stratos-claude`
+   - CLI: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --user --app codespaces --repos Stratos-Edge/stratos-claude`
 4. **Set auto-delete to 30 days:** `github.com/settings/codespaces` → **Default retention period** → `30 days`.
 
 Then open the repo → **Code ▸ Codespaces ▸ Create codespace**. After ~1–2 min, run `claude` — the tools and skills are loaded and you're authenticated via your Team seat.
