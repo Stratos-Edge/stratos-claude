@@ -6,16 +6,23 @@
 # This script only suppresses first-run prompts and installs the Stratos plugin.
 set -euo pipefail
 
-# 1. Suppress the onboarding/theme/trust prompts. (~/.claude.json sits at the home
-#    root, which is NOT on the persisted ~/.claude volume, so re-create it each build.)
-#    Auth itself comes from CLAUDE_CODE_OAUTH_TOKEN (the user's Claude Team seat),
-#    injected as a personal Codespaces secret.
-cat > "$HOME/.claude.json" <<'EOF'
+# 1. Suppress the onboarding/theme/trust prompts AND pre-approve the injected
+#    ANTHROPIC_API_KEY so there's no one-time "approve this key?" prompt. Claude
+#    records key approval as the key's LAST 20 CHARACTERS.
+#    (~/.claude.json sits at the home root, NOT on the persisted ~/.claude volume,
+#    so it's re-created each build. ANTHROPIC_API_KEY and the tool keys
+#    [LINKUP/APIFY/NETROWS] are injected automatically by the Codespaces secrets.)
+KEY_TAIL=""
+if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+  KEY_TAIL="${ANTHROPIC_API_KEY: -20}"
+fi
+cat > "$HOME/.claude.json" <<EOF
 {
   "hasCompletedOnboarding": true,
   "hasCompletedProjectOnboarding": true,
   "hasTrustDialogAccepted": true,
-  "theme": "dark"
+  "theme": "dark",
+  "customApiKeyResponses": { "approved": ["$KEY_TAIL"], "rejected": [] }
 }
 EOF
 
