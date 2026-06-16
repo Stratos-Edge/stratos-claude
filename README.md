@@ -1,101 +1,29 @@
-# Stratos Edge — Claude Code Capability Package
+# Stratos Edge — your Claude workspace
 
-A private repo that is two things at once:
+A ready-to-go cloud workspace with Stratos's Claude tools already set up. **Nothing to install on your computer.**
 
-1. A **Claude Code plugin marketplace + plugin** (`stratos-edge`) — the curated Stratos toolset: skills, slash commands, agents, and MCP servers (starting with **Linkup** web search).
-2. A **GitHub Codespace template** — open it as a Codespace and Claude Code launches installed, authenticated with **your own Claude Team seat**, and loaded with the plugin.
+## How to use it
 
-Each person opens their **own isolated Codespace** (its own private VM) from this repo. Your sessions and work live only in your container — the repo stays a read-only capability library and never receives anyone's work.
+1. On this page, click the green **Code** button → **Codespaces** → **Create codespace on main**.
+2. Wait about a minute while it sets up. It opens in your browser with **Claude** in the side panel.
+3. Talk to Claude — it already has the Stratos tools and skills loaded.
 
----
+Your work lives in your own private workspace. Close the tab and come back anytime — it's saved. (Workspaces you don't touch for 30 days clean themselves up.)
 
-## Access model — who can do what
+## First time only — sign in to Claude
 
-- **Users get the `Read` role.** They can launch a Codespace from the repo but **cannot change it.** Any commits they make inside their Codespace auto-divert to *their own private fork*; the canonical repo only changes via a pull request an owner approves.
-- **Forking must be enabled** for the repo (org setting). This is the single setting that lets Read-only users launch Codespaces — and it exposes nothing beyond what `Read` already allows.
-- **Codespaces access = "Selected members"** (org setting) — only the people you choose.
+Just once, so Claude knows it's you:
 
----
+1. In your workspace, open a terminal: top menu → **Terminal → New Terminal**.
+2. Type `claude` and press **Enter**.
+3. Follow the sign-in link, click **Authorize**, and if it shows a **code**, paste that code back into the terminal and press Enter.
 
-## For teammates — one-time setup (~5–10 min)
+You stay signed in after that.
 
-1. **Accept the repo invite** (Read access). Enable 2FA if prompted.
-2. **Authenticate Claude with your Team seat:** on any machine with a browser, log into your Stratos Claude Team account and run:
-   ```bash
-   claude setup-token
-   ```
-   Copy the token it prints (valid ~1 year).
-3. **Store it as your personal Codespaces secret** named `CLAUDE_CODE_OAUTH_TOKEN`, scoped to this repo:
-   - Web: `github.com/settings/codespaces` → **Codespaces secrets** → **New secret**, or
-   - CLI: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --user --app codespaces --repos Stratos-Edge/stratos-claude`
-4. **Set auto-delete to 30 days:** `github.com/settings/codespaces` → **Default retention period** → `30 days`.
+## Getting the latest tools
 
-Then open the repo → **Code ▸ Codespaces ▸ Create codespace**. After ~1–2 min, run `claude` — the tools and skills are loaded and you're authenticated via your Team seat.
-
-> The shared tool keys (Linkup, etc.) are injected automatically as **org** secrets — you don't set those. The only secret you manage is your own `CLAUDE_CODE_OAUTH_TOKEN`.
+When new tools or skills are added, refresh: press `Cmd/Ctrl + Shift + P`, type **Rebuild Container**, and hit Enter.
 
 ---
 
-## Opening it & daily use
-
-Open the repo → **Code ▸ Codespaces ▸ Create codespace**, in whichever client you like — the Codespace *is* the environment; the client is just a window into it, and Claude always runs **inside the container** (with the plugin, skills, MCP tools, and your auth):
-
-- **VS Code in the browser** — easiest, zero install. The **Claude Code panel (GUI)** is already there (the devcontainer auto-installs the extension), or use `claude` in the integrated terminal.
-- **VS Code Desktop** (GitHub Codespaces extension) — same, as a native app.
-- **Terminal / `gh codespace ssh`** — `claude` in the shell.
-- The standalone **Claude desktop app** is *not* the way in — it runs locally and only reaches a Codespace via clunky SSH tunneling. Use VS Code.
-
-Daily:
-- Sessions persist across stop/start **and** rebuilds (a named volume holds `~/.claude`); idle Codespaces pause after 30 min and delete only after **30 days unused**.
-- **To get the latest tools:** rebuild the container (`Cmd/Ctrl+Shift+P` → *Codespaces: Rebuild Container*) or create a fresh Codespace.
-
----
-
-## What's inside
-
-| Path | Purpose |
-| --- | --- |
-| `plugins/stratos-edge/` | The plugin: `skills/`, `commands/`, `agents/`, and `plugin.json` (MCP servers) |
-| `.claude-plugin/marketplace.json` | Marketplace manifest |
-| `.devcontainer/` | Codespace setup — installs Claude Code + the plugin, persists sessions |
-
----
-
-## For maintainers / admins
-
-**One-time org setup:**
-- Repo role = **Read** for users; **enable private-repo forking**; Codespaces access = **Selected members**.
-- Set the shared tool keys as **org-level** Codespaces secrets scoped to this repo (set once, everyone gets them — no per-user action): `LINKUP_API_KEY` (+ `NETROWS_API_KEY` later).
-- Set a Codespaces **spending limit**; optionally restrict machine types and set a retention policy.
-
-**Adding capabilities:**
-- **Skill:** create `plugins/stratos-edge/skills/<name>/SKILL.md` (see `example-skill`). Commit + push; teammates rebuild.
-- **Command / agent:** drop a `.md` in `commands/` or `agents/`.
-- **MCP server:** add an entry to `mcpServers` in `plugins/stratos-edge/.claude-plugin/plugin.json`, referencing its key as `${SOME_KEY}`, and add `SOME_KEY` as an org Codespaces secret.
-
-### Adding Netrows (pending its package/URL)
-
-Add **one** of these to `mcpServers` in `plugin.json`, then set `NETROWS_API_KEY` as an org secret:
-
-```jsonc
-// stdio (npm package)
-"netrows": { "command": "npx", "args": ["-y", "<netrows-package>"],
-             "env": { "NETROWS_API_KEY": "${NETROWS_API_KEY}" } }
-```
-```jsonc
-// hosted HTTP
-"netrows": { "type": "http", "url": "<netrows-mcp-url>",
-             "headers": { "Authorization": "Bearer ${NETROWS_API_KEY}" } }
-```
-
----
-
-## Secrets reference
-
-| Secret | Level | Purpose |
-| --- | --- | --- |
-| `CLAUDE_CODE_OAUTH_TOKEN` | **per-user** | Authenticates Claude Code via the user's Claude Team seat (`claude setup-token`, ~1 yr) |
-| `LINKUP_API_KEY` | **org** | Linkup web-search MCP (shared Stratos key) |
-| `NETROWS_API_KEY` | **org** | Netrows MCP *(pending)* |
-
-No Anthropic API key is used. Secrets are never stored in this repo — only referenced as `${...}` and injected by Codespaces at runtime.
+Need help or access to more tools? Ping Peat. · Maintainers: see [MAINTAINING.md](MAINTAINING.md).

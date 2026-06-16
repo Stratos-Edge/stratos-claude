@@ -8,5 +8,19 @@
   "mounts": [
     "source=stratos-claude-config-${devcontainerId},target=/home/node/.claude,type=volume"
   ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "-github.copilot",
+        "-github.copilot-chat"
+      ],
+      "settings": {
+        "chat.disableAIFeatures": true,
+        "workbench.startupEditor": "none",
+        "terminal.integrated.hideOnStartup": "always"
+      }
+    }
+  },
   "postCreateCommand": "bash .devcontainer/setup.sh"
 }
