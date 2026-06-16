@@ -1,0 +1,13 @@
+{
+  "model": "opus",
+  "env": {
+    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(git push)"
+    ]
+  }
+}
