@@ -16,7 +16,8 @@ Just once, so Claude knows it's you:
 
 1. In your workspace, open a terminal: top menu → **Terminal → New Terminal**.
 2. Type `claude` and press **Enter**.
-3. Follow the sign-in link, click **Authorize**, and if it shows a **code**, paste that code back into the terminal and press Enter.
+3. Follow the sign-in link, click **Authorize**, and when it shows a **code**, paste that code back into the terminal and press Enter. (The code is normal — it's how sign-in works in a cloud workspace.)
+4. If the Claude panel still shows you signed out, reload: press `Cmd/Ctrl + Shift + P`, type **Reload Window**, and hit Enter.
 
 You stay signed in after that.
 
