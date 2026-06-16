@@ -14,21 +14,16 @@ if ! grep -q '.local/bin' "$HOME/.bashrc" 2>/dev/null; then
 fi
 
 # 2. Pre-seed ~/.claude.json so the first interactive session has no prompts.
-#    Claude stores approval of a custom API key as the LAST 20 CHARACTERS of the key.
-#    ANTHROPIC_API_KEY is injected by Codespaces secrets; if it's missing, the key
-#    simply won't be pre-approved (Claude will prompt once).
+#    Auth itself comes from each user's CLAUDE_CODE_OAUTH_TOKEN (their Claude Team
+#    seat), injected as a personal Codespaces secret — NO Anthropic API key is used.
+#    This file only suppresses the onboarding/theme/trust prompts.
 mkdir -p "$HOME/.claude"
-KEY_TAIL=""
-if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
-  KEY_TAIL="${ANTHROPIC_API_KEY: -20}"
-fi
-cat > "$HOME/.claude.json" <<EOF
+cat > "$HOME/.claude.json" <<'EOF'
 {
   "hasCompletedOnboarding": true,
   "hasCompletedProjectOnboarding": true,
   "hasTrustDialogAccepted": true,
-  "theme": "dark",
-  "customApiKeyResponses": { "approved": ["$KEY_TAIL"], "rejected": [] }
+  "theme": "dark"
 }
 EOF
 
