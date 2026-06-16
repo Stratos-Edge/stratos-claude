@@ -13,6 +13,11 @@
       "type": "http",
       "url": "https://mcp.apify.com",
       "headers": { "Authorization": "Bearer ${APIFY_API_KEY}" }
+    },
+    "netrows": {
+      "command": "npx",
+      "args": ["-y", "@netrows/mcp-server"],
+      "env": { "NETROWS_API_KEY": "${NETROWS_API_KEY}" }
     }
   }
 }
