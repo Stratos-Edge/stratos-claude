@@ -2,8 +2,11 @@
   "name": "Stratos Edge — Claude Code",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh",
-  "postStartCommand": "bash .devcontainer/persist-sessions.sh"
+  "mounts": [
+    "source=stratos-claude-config-${devcontainerId},target=/home/node/.claude,type=volume"
+  ],
+  "postCreateCommand": "bash .devcontainer/setup.sh"
 }

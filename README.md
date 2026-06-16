@@ -36,10 +36,17 @@ Then open the repo → **Code ▸ Codespaces ▸ Create codespace**. After ~1–
 
 ---
 
-## Daily use
+## Opening it & daily use
 
-- Run `claude`. Sessions persist across stop/start **and** container rebuilds.
-- Idle Codespaces pause after 30 min (no data loss) and delete only after **30 days unused**.
+Open the repo → **Code ▸ Codespaces ▸ Create codespace**, in whichever client you like — the Codespace *is* the environment; the client is just a window into it, and Claude always runs **inside the container** (with the plugin, skills, MCP tools, and your auth):
+
+- **VS Code in the browser** — easiest, zero install. The **Claude Code panel (GUI)** is already there (the devcontainer auto-installs the extension), or use `claude` in the integrated terminal.
+- **VS Code Desktop** (GitHub Codespaces extension) — same, as a native app.
+- **Terminal / `gh codespace ssh`** — `claude` in the shell.
+- The standalone **Claude desktop app** is *not* the way in — it runs locally and only reaches a Codespace via clunky SSH tunneling. Use VS Code.
+
+Daily:
+- Sessions persist across stop/start **and** rebuilds (a named volume holds `~/.claude`); idle Codespaces pause after 30 min and delete only after **30 days unused**.
 - **To get the latest tools:** rebuild the container (`Cmd/Ctrl+Shift+P` → *Codespaces: Rebuild Container*) or create a fresh Codespace.
 
 ---

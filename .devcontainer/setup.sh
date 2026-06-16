@@ -1,23 +1,15 @@
 #!/usr/bin/env bash
 # Runs once when the Codespace container is created (postCreate).
-# Installs Claude Code, pre-seeds a prompt-free first run, and installs the plugin.
+# The Claude Code CLI *and* the VS Code extension are installed by the official
+# ghcr.io/anthropics/devcontainer-features/claude-code feature (see devcontainer.json),
+# so opening the Codespace in VS Code shows the Claude panel automatically.
+# This script only suppresses first-run prompts and installs the Stratos plugin.
 set -euo pipefail
 
-# 1. Install Claude Code if it isn't already present.
-if ! command -v claude >/dev/null 2>&1; then
-  curl -fsSL https://claude.ai/install.sh | bash
-fi
-export PATH="$HOME/.local/bin:$PATH"
-# Make the CLI available in interactive shells too.
-if ! grep -q '.local/bin' "$HOME/.bashrc" 2>/dev/null; then
-  echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-fi
-
-# 2. Pre-seed ~/.claude.json so the first interactive session has no prompts.
-#    Auth itself comes from each user's CLAUDE_CODE_OAUTH_TOKEN (their Claude Team
-#    seat), injected as a personal Codespaces secret — NO Anthropic API key is used.
-#    This file only suppresses the onboarding/theme/trust prompts.
-mkdir -p "$HOME/.claude"
+# 1. Suppress the onboarding/theme/trust prompts. (~/.claude.json sits at the home
+#    root, which is NOT on the persisted ~/.claude volume, so re-create it each build.)
+#    Auth itself comes from CLAUDE_CODE_OAUTH_TOKEN (the user's Claude Team seat),
+#    injected as a personal Codespaces secret.
 cat > "$HOME/.claude.json" <<'EOF'
 {
   "hasCompletedOnboarding": true,
@@ -27,12 +19,9 @@ cat > "$HOME/.claude.json" <<'EOF'
 }
 EOF
 
-# 3. Register this repo as a local plugin marketplace and install the plugin.
-#    The repo is checked out locally, so no remote auth is needed.
-claude plugin marketplace add "$PWD"
-claude plugin install stratos-edge@stratos --scope user
-
-# 4. Make sure session transcripts are persisted across rebuilds.
-bash "$PWD/.devcontainer/persist-sessions.sh" || true
+# 2. Register this repo as a local plugin marketplace and install the plugin
+#    (idempotent across rebuilds).
+claude plugin marketplace add "$PWD" || true
+claude plugin install stratos-edge@stratos --scope user || true
 
 echo "Stratos Edge Claude Code environment ready."
