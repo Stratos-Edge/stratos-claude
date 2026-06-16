@@ -1,17 +1,31 @@
 #!/usr/bin/env bash
-# Runs once when the Codespace container is created (postCreate).
-# The Claude Code CLI *and* the VS Code extension are installed by the official
-# ghcr.io/anthropics/devcontainer-features/claude-code feature (see devcontainer.json),
-# so opening the Codespace in VS Code shows the Claude panel automatically.
-# This script only suppresses first-run prompts and installs the Stratos plugin.
+# postCreate: runs when the Codespace container is created (and on rebuild).
+# The Claude Code CLI + VS Code extension are installed by the official
+# ghcr.io/anthropics/devcontainer-features/claude-code feature (see devcontainer.json).
+# This script fixes the ~/.claude volume permissions, pre-seeds a prompt-free first
+# run, and installs the Stratos plugin (which carries the linkup/apify/netrows MCP
+# servers).
 set -euo pipefail
 
-# 1. Suppress the onboarding/theme/trust prompts AND pre-approve the injected
-#    ANTHROPIC_API_KEY so there's no one-time "approve this key?" prompt. Claude
-#    records key approval as the key's LAST 20 CHARACTERS.
-#    (~/.claude.json sits at the home root, NOT on the persisted ~/.claude volume,
-#    so it's re-created each build. ANTHROPIC_API_KEY and the tool keys
-#    [LINKUP/APIFY/NETROWS] are injected automatically by the Codespaces secrets.)
+# 0. Fix ownership of the mounted ~/.claude volume. Docker creates named volumes owned
+#    by root, but the container runs as a non-root user — so without this, writes to
+#    ~/.claude fail with EACCES, which blocks the plugin install, credential storage,
+#    and session state (e.g. ~/.claude/session-env). This is the root cause of the
+#    plugin/MCP servers not appearing.
+sudo chown -R "$(id -un):$(id -gn)" "$HOME/.claude" 2>/dev/null \
+  || echo "WARN: could not chown ~/.claude (sudo unavailable?) — plugin install may fail."
+mkdir -p "$HOME/.claude"
+
+# 1. Make sure the Claude CLI is callable (installed by the devcontainer feature).
+if ! command -v claude >/dev/null 2>&1; then
+  echo "ERROR: 'claude' not found on PATH — the devcontainer feature may not have installed it." >&2
+  exit 1
+fi
+
+# 2. Suppress onboarding/theme/trust prompts and pre-approve the injected
+#    ANTHROPIC_API_KEY (Claude records approval as the key's last 20 characters).
+#    ANTHROPIC_API_KEY + the tool keys (LINKUP/APIFY/NETROWS) are injected by
+#    Codespaces secrets.
 KEY_TAIL=""
 if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
   KEY_TAIL="${ANTHROPIC_API_KEY: -20}"
@@ -26,9 +40,13 @@ cat > "$HOME/.claude.json" <<EOF
 }
 EOF
 
-# 2. Register this repo as a local plugin marketplace and install the plugin
-#    (idempotent across rebuilds).
-claude plugin marketplace add "$PWD" || true
-claude plugin install stratos-edge@stratos --scope user || true
+# 3. Register this repo as a local plugin marketplace and install the plugin.
+#    Failures are logged (not silently swallowed with '|| true') so they surface
+#    in the build log.
+claude plugin marketplace add "$PWD" 2>&1 \
+  || echo "NOTE: 'plugin marketplace add' returned nonzero (often it's already added)."
+claude plugin install stratos-edge@stratos --scope user 2>&1 \
+  || echo "ERROR: 'plugin install' failed — the MCP servers will be missing."
 
-echo "Stratos Edge Claude Code environment ready."
+echo "Stratos Edge setup done. Installed plugins:"
+claude plugin list 2>&1 || true
