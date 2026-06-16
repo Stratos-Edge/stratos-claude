@@ -25,7 +25,8 @@ Each user authenticates with their **own Claude Team seat** (no central API key)
 | --- | --- | --- |
 | `CLAUDE_CODE_OAUTH_TOKEN` | per-user | Claude auth (user's Team seat) |
 | `LINKUP_API_KEY` | org | Linkup web-search MCP (shared) |
-| `NETROWS_API_KEY` | org | Netrows MCP *(pending)* |
+| `APIFY_TOKEN` | org | Apify Actors MCP — web scraping/automation (note: Apify calls it a *token*, not key) |
+| `NETROWS_API_KEY` | org | Netrows MCP *(pending package/URL)* |
 
 Store shared keys as **org** Codespaces secrets scoped to this repo. 1Password is the source of truth for the canonical values; mirror them into the GitHub secret. Never commit secrets — they're referenced as `${...}` and injected by Codespaces.
 

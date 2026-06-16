@@ -8,6 +8,11 @@
       "type": "http",
       "url": "https://mcp.linkup.so/mcp",
       "headers": { "Authorization": "Bearer ${LINKUP_API_KEY}" }
+    },
+    "apify": {
+      "type": "http",
+      "url": "https://mcp.apify.com",
+      "headers": { "Authorization": "Bearer ${APIFY_TOKEN}" }
     }
   }
 }
