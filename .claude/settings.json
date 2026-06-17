@@ -1,7 +1,8 @@
 {
   "model": "opus",
   "env": {
-    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
+    "MCP_TIMEOUT": "30000"
   },
   "permissions": {
     "defaultMode": "acceptEdits",

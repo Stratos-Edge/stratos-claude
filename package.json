@@ -1,0 +1,9 @@
+{
+  "name": "stratos-claude",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Stratos Edge Claude Code workspace — local install of the Netrows MCP server so it starts reliably.",
+  "dependencies": {
+    "@netrows/mcp-server": "1.0.1"
+  }
+}

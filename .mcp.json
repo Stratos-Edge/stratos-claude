@@ -12,8 +12,7 @@
     },
     "netrows": {
       "command": "npx",
-      "args": ["-y", "@netrows/mcp-server"],
-      "env": { "NETROWS_API_KEY": "${NETROWS_API_KEY}" }
+      "args": ["-y", "@netrows/mcp-server"]
     }
   }
 }
