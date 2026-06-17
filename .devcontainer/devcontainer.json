@@ -18,7 +18,7 @@
       ],
       "settings": {
         "chat.disableAIFeatures": true,
-        "workbench.startupEditor": "none",
+        "workbench.startupEditor": "readme",
         "terminal.integrated.hideOnStartup": "always"
       }
     }

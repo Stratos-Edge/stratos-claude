@@ -5,9 +5,13 @@
   },
   "permissions": {
     "defaultMode": "acceptEdits",
-    "deny": [
-      "Bash(git push:*)",
-      "Bash(git push)"
+    "allow": [
+      "mcp__plugin_stratos-edge_linkup",
+      "mcp__plugin_stratos-edge_apify",
+      "mcp__plugin_stratos-edge_netrows",
+      "WebSearch",
+      "WebFetch",
+      "Bash"
     ]
   }
 }
