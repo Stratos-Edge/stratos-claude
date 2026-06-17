@@ -6,7 +6,7 @@ A cloud workspace with Stratos's Claude tools ready to go — nothing to install
 Green **Code** button → **Codespaces** → **Create codespace on main**. Wait about a minute.
 
 ## Once you're in
-1. Click the **✱ Spark icon** in the left sidebar to open **Claude**.
+1. Click the **✱ Anthropic icon** in the left sidebar to open **Claude**.
 2. Click **＋ New Session**.
 3. Start working — Linkup, Apify, and Netrows are already loaded.
 
