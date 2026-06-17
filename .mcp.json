@@ -1,8 +1,4 @@
 {
-  "name": "stratos-edge",
-  "version": "0.1.0",
-  "description": "Stratos Edge Claude Code capabilities — skills, commands, and tools.",
-  "author": { "name": "Stratos Edge" },
   "mcpServers": {
     "linkup": {
       "type": "http",

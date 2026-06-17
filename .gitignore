@@ -1,6 +1,8 @@
-# This repo holds capabilities only — never secrets. Belt-and-suspenders guards:
+# Secrets — never commit. The real keys come from 1Password as an env file.
+*.env
 .env
-.env.*
+stratos-keys.env
+!.env.example
 .claude/.credentials.json
 **/.credentials.json
 

@@ -1,7 +1,0 @@
-{
-  "name": "stratos",
-  "owner": { "name": "Stratos Edge" },
-  "plugins": [
-    { "name": "stratos-edge", "source": "./plugins/stratos-edge" }
-  ]
-}
