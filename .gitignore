@@ -1,8 +1,7 @@
-# Secrets — never commit. The real keys come from 1Password as an env file.
+# Secrets — never commit. The real startup package (keys) comes via 1Password.
+stratos-startup.md
 *.env
-.env
-stratos-keys.env
-!.env.example
+.claude/settings.local.json
 .claude/.credentials.json
 **/.credentials.json
 

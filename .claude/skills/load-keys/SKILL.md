@@ -1,15 +1,25 @@
 ---
 name: load-keys
-description: Load Stratos tool API keys from a dropped env file into Claude's user settings so the MCP tools authenticate. Use when the user drops or mentions an env file of API keys (e.g. stratos-keys.env).
+description: Load Stratos tool API keys from the downloaded Stratos startup package into this workspace's local settings so the MCP tools authenticate. Use when the user says they downloaded the startup package / new keys and asks to load, reload, or rotate their keys.
 ---
 
 # Load API keys
 
-When the user has dropped an env file of API keys into the working folder (e.g. `stratos-keys.env`, shared via 1Password) and asks to load / set up their keys:
+Use this when a user is already set up in a Stratos workspace and wants to (re)load or rotate
+their keys — e.g. they downloaded an updated `stratos-startup.md` and say "load my keys."
 
-1. Read that env file. It contains lines like `LINKUP_API_KEY=...`, `APIFY_API_KEY=...`, `NETROWS_API_KEY=...`.
-2. Merge each `KEY=VALUE` into the `env` object of the user's global settings at `~/.claude/settings.json` — create the file or the `env` object if missing, and do not overwrite unrelated keys. (`~/.claude` is a protected path, so approve the one-time settings edit when prompted.)
-3. Never print the key values, and never copy them into this repo.
-4. Tell the user the keys are saved and to **restart the Claude session** so the MCP servers pick them up.
+1. **Locate the file.** Look for the Stratos startup package `stratos-startup.md` (or a
+   `stratos-keys.env`) in this order: the workspace root, the current directory, then
+   `~/Downloads`. If you find none, ask the user where it is — don't guess.
+2. **Extract the keys.** Read the file and pull out the `KEY=VALUE` lines — `LINKUP_API_KEY`,
+   `APIFY_API_KEY`, `NETROWS_API_KEY` — ignoring any surrounding markdown, comments, or blanks.
+3. **Write project-local, NOT global.** Merge each key into the `env` object of
+   `.claude/settings.local.json` in the workspace root (create it if missing; leave other keys
+   intact). This file is gitignored and scoped to this folder.
+   - Do **not** write to `~/.claude/settings.json` (global — leaks keys into other projects).
+   - Do **not** write to `.claude/settings.json` (committed/shared — commits live keys).
+4. **Never print the key values, and never copy them into any committed file.**
+5. Tell the user the keys are saved and to **restart Claude from this workspace folder** so the
+   MCP servers pick them up.
 
-After the restart, the `linkup`, `apify`, and `netrows` tools authenticate from those keys.
+After the restart, the `linkup`, `apify`, and `netrows` MCP servers authenticate from those keys.
